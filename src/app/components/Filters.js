@@ -1,17 +1,19 @@
 import React, { useEffect } from "react"
 import { getBooksData } from "../lib/actions";
 
-const Filters = ( { language, setLanguage, setBooks, quantity, setQuantity } ) => {
+const Filters = ( { setBooks, filters, setFilters } ) => {
 
 	const resetLanguage = async () => {
-		const books = await getBooksData(20, language);
+		const books = await getBooksData(20, filters?.language, filters?.likes, filters?.reviews);
 		setBooks(books);
 	}
 
-	const changeLanguage = async (e) => {
-		const { value } = e.target;
-		await setLanguage(value)
-		await resetLanguage()
+	const changeFilters = async (e) => {
+		const { name, value } = e.target;
+		await setFilters({
+			...filters,
+			[name]: value
+		})
 	}
 
 	useEffect(() => {
@@ -19,14 +21,14 @@ const Filters = ( { language, setLanguage, setBooks, quantity, setQuantity } ) =
 		  await resetLanguage();
 		};
 		fetchBooks();
-	  }, [language]); 
+	  }, [filters]); 
 
 	return (
 		<>
 			<div className="flex flex-col items-center justify-center">
 				<div className="flex flex-col w-full p-5">
 					<label className="text-sm font-semibold text-gray-400">Language</label>
-					<select value={language} className="input" onChange={changeLanguage}>
+					<select name="language" value={filters?.language} className="input" onChange={changeFilters}>
 						<option value='en'>English</option>
 						<option value='es'>Spanish</option>
 						<option value='fr'>French</option>
@@ -43,15 +45,15 @@ const Filters = ( { language, setLanguage, setBooks, quantity, setQuantity } ) =
 
 			<div className="flex flex-col items-center justify-center">
 				<div className="flex flex-col w-full p-5">
-					<label className="text-sm font-semibold text-gray-400">Likes</label>
-					<input type="range" min={0} max={5} step={0.5} />
+					<label className="text-sm font-semibold text-gray-400">Likes: {filters?.likes}</label>
+					<input name="likes" value={filters.likes} type="range" min={0} max={5} step={0.1} onChange={changeFilters}/>
 				</div>
 			</div>
 
 			<div className="flex flex-col items-center justify-center">
 				<div className="flex flex-col w-full p-5">
-					<label className="text-sm font-semibold text-gray-400">Review</label>
-					<input type="number" className="input" max={10} min={0} />
+					<label className="text-sm font-semibold text-gray-400">Reviews:</label>
+					<input name="reviews" value={filters.reviews} type="number" className="input" onChange={changeFilters}/>
 				</div>
 			</div>
 
