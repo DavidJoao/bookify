@@ -4,25 +4,28 @@ import { getBooksData } from "../lib/actions";
 const Filters = ( { setBooks, filters, setFilters } ) => {
 
 	const resetLanguage = async () => {
-		const books = await getBooksData(20, filters?.language, filters?.likes, filters?.reviews);
-		setBooks(books);
-	}
-
-	const changeFilters = async (e) => {
+		const books = await getBooksData(filters.quantity, filters.language, filters.likes, filters.reviews);
+		await setBooks(books);
+	};
+	
+	const changeFilters = (e) => {
 		const { name, value } = e.target;
-		await setFilters({
-			...filters,
-			[name]: value
-		})
-	}
+		if (filters[name] !== value) {
+			setFilters((prevFilters) => ({
+				...prevFilters,
+				[name]: value,
+			}));
+		}
+	};
 
-	useEffect(() => {
+	  useEffect(() => {
 		const fetchBooks = async () => {
-		  await resetLanguage();
-		};
-		fetchBooks();
-	  }, [filters]); 
+			await resetLanguage();
+		  };
+		  fetchBooks();
+	}, [filters.language]);
 
+	// modal
 	return (
 		<>
 			<div className="flex flex-col items-center justify-center">
