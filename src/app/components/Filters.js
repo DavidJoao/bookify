@@ -1,18 +1,14 @@
 import React, { useEffect, useState } from "react"
 import { getBooksData } from "../lib/actions";
 import { arrowRight, galleryIcon, listIcon, random } from "../lib/icons";
+import ExportButton from "./ExportButton";
 
-const Filters = ({ setBooks, filters, setFilters, handleSeedChange, setModalState, setSeed, setSelectedBook, getBookBySeed, view, setView }) => {
+const Filters = ({ books, setBooks, filters, setFilters, handleSeedChange, setModalState, setSeed, setSelectedBook, getBookBySeed, view, setView }) => {
 
 	const [seedSearch, setSeedSearch] = useState("")
 
 	const resetLanguage = async () => {
-		const books = await getBooksData(
-			filters.quantity,
-			filters.language,
-			filters.likes,
-			filters.reviews
-		)
+		const books = await getBooksData(filters?.quantity, filters?.language, filters?.likes, filters?.reviews)
 		await setBooks(books)
 	}
 
@@ -54,18 +50,18 @@ const Filters = ({ setBooks, filters, setFilters, handleSeedChange, setModalStat
 						Language
 					</label>
 					<select name="language" value={filters?.language} className="input w-full" onChange={changeFilters}>
-						<option value="en">English</option>
-						<option value="es">Spanish</option>
-						<option value="fr">French</option>
+						<option value="en">English (USA)</option>
+						<option value="es">Spanish (Mexico)</option>
+						<option value="fr">French (France)</option>
 					</select>
 				</div>
 			</div>
 
 			<div className="flex flex-col items-center justify-center p-2 w-full">
-				<div className="flex flex-row w-full my-auto">
-					<input placeholder="Seed" className="border w-1/2 input" value={seedSearch} onChange={(e) => setSeedSearch(e.target.value)}/>
-					<button className="w-1/4 input flex items-center justify-center bg-blue-500 text-white font-xl" onClick={changeSeed}>{arrowRight}</button>
-					<button className="w-1/4 input flex items-center justify-center bg-blue-500 text-white font-xl" onClick={changeRandomSeed}>{random}</button>
+				<div className="flex flex-row items-center justify-around w-full my-auto">
+					<input required placeholder="Seed" className="border w-1/2 input" value={seedSearch} onChange={(e) => setSeedSearch(e.target.value)}/>
+					<button className={"rounded-full border-[1px] border-blue-500 text-blue-500 p-2 focus:bg-blue-500 focus:text-white button-transition"} onClick={changeSeed}>{arrowRight}</button>
+					<button className={"rounded-full border-[1px] border-blue-500 text-blue-500 p-2 focus:bg-blue-500 focus:text-white button-transition"} onClick={changeRandomSeed}>{random}</button>
 				</div>
 			</div>
 
@@ -79,7 +75,7 @@ const Filters = ({ setBooks, filters, setFilters, handleSeedChange, setModalStat
 						value={filters.likes}
 						type="range"
 						min={0}
-						max={5}
+						max={10}
 						step={0.1}
 						onChange={changeFilters}
 					/>
@@ -87,16 +83,17 @@ const Filters = ({ setBooks, filters, setFilters, handleSeedChange, setModalStat
 			</div>
 
 			<div className="flex flex-col items-center justify-centerp-2 w-full">
-				<div className="flex flex-row items-center w-full my-auto">
+				<div className="flex flex-row items-center w-full my-auto gap-2">
 					<label className="text-sm font-semibold text-gray-400">Reviews:</label>
 					<input name="reviews" value={filters.reviews} type="number" className="input" onChange={changeFilters} step={0.1}/>
 				</div>
 			</div>
 
 			<div className="flex flex-col items-center justify-center p-2 w-full">
-				<div className="flex flex-row justify-center items-center w-full my-auto">
-					<button className="input w-full flex justify-center bg-blue-500 text-white focus:bg-black" onClick={() => setView("list")}>{listIcon}</button>
-					<button className="input w-full flex justify-center bg-blue-500 text-white focus:bg-black" onClick={() => setView("gallery")}>{galleryIcon}</button>
+				<div className="flex flex-row justify-center items-center w-full my-auto gap-5">
+					<button className={view === 'list' ? "rounded-full border-[1px] p-2 bg-blue-500 text-white" : "rounded-full border-[1px] border-blue-500 text-blue-500 p-2 button-transition"} onClick={() => setView("list")}>{listIcon}</button>
+					<button className={view === 'gallery' ? "rounded-full border-[1px] p-2 bg-blue-500 text-white" : "rounded-full border-[1px] border-blue-500 text-blue-500 p-2 button-transition"} onClick={() => setView("gallery")}>{galleryIcon}</button>
+					<ExportButton books={books} />
 				</div>
 			</div>
 		</>
