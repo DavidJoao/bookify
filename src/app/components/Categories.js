@@ -3,11 +3,11 @@ import React from 'react'
 const Categories = () => {
   return (
     <>
-        <p className="text-center my-auto">#</p>
-        <p className="text-center my-auto">ISBN</p>
-        <p className="text-center my-auto">Title</p>
-        <p className="text-center my-auto">Author(s)</p>
-        <p className="text-center my-auto">Publisher</p>
+        <p className="text-center my-auto font-bold">#</p>
+        <p className="text-center my-auto font-bold">ISBN</p>
+        <p className="text-center my-auto font-bold">Title</p>
+        <p className="text-center my-auto font-bold">Author(s)</p>
+        <p className="text-center my-auto font-bold">Publisher</p>
     </>
   )
 }
