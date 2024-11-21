@@ -8,10 +8,24 @@
   .input {
     @apply mt-1 px-3 py-1 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:border-gray-400 text-gray-500
   }
+  .button-transition{
+    @apply transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 hover:text-white hover:bg-blue-500
+  }
+
+  .button-selection{
+    @apply transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110
+  }
 }
 
 @layer utilities {
   .toolbar-height {
     height: var(--toolbar-height);
   }
+}
+
+.montserrat-body {
+  font-family: "Montserrat", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 300;
+  font-style: normal;
 }
