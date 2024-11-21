@@ -9,3 +9,9 @@
     @apply mt-1 px-3 py-1 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:border-gray-400 text-gray-500
   }
 }
+
+@layer utilities {
+  .toolbar-height {
+    height: var(--toolbar-height);
+  }
+}
