@@ -6,7 +6,6 @@ import BookDetails from "../components/BookDetails";
 import { getBooksData } from "../lib/actions";
 import { Modal } from "react-bootstrap";
 import seedrandom from "seedrandom";
-import Image from "next/image";
 
 const Home = () => {
 	const initialFilters = {
@@ -25,7 +24,7 @@ const Home = () => {
 	const [toolbarHeight, setToolbarHeight] = useState(0)
 	const [seed, setSeed] = useState(50)
 	const [view, setView] = useState("list")	
-
+	
 	useEffect(() => {
 		const toolbar = document.getElementById("toolbar")
 		if (toolbar) {
@@ -40,10 +39,10 @@ const Home = () => {
 	useEffect(() => {
 		const fetchBooks = async () => {
 			const books = await getBooksData(
-				filters.quantity,
-				filters.language,
-				filters.likes,
-				filters.reviews
+				filters?.quantity,
+				filters?.language,
+				filters?.likes,
+				filters?.reviews
 			)
 			setBooks(books)
 		}
@@ -64,12 +63,15 @@ const Home = () => {
 		return () => {
 			if (loadMoreTrigger.current) observer.unobserve(loadMoreTrigger.current)
 		}
-	}, [loadingBooks, loadMoreTrigger])
+	}, [loadingBooks, loadMoreTrigger, view ])
 
 	const loadMore = async () => {
 		setLoadingBooks(true)
 		const newQuantity = filters?.quantity + 20
-		setFilters({ ...filters, ["quantity"]: newQuantity })
+		setFilters(prevFilters => ({
+			...prevFilters,
+			quantity: prevFilters.quantity + 20,
+		}));
 
 		try {
 			const newData = await getBooksData(
@@ -107,8 +109,8 @@ const Home = () => {
 			<Modal.Body>
 				<div className="h-[300px] w-[200px] mx-auto rounded" style={{ background:(`url("${selectedBook.image}")`), backgroundSize:'cover' }}></div>
 				<div className="flex flex-col m-2 items-center justify-evenly">
-					<p>Publisher: {selectedBook.publisher}</p>
-					<p>Likes</p>
+					<p className="italic">Publisher: {selectedBook.publisher}</p>
+					<p>{selectedBook.likes} Like(s)</p>
 				</div>
 				<div>
 					<p className="text-center mt-3 bg-slate-200 p-1 rounded-t font-bold shadow-lg">Reviews: {selectedBook?.reviews?.length}</p>
@@ -127,9 +129,8 @@ const Home = () => {
 		</Modal>
 			{books ? (
 				<>
-					{/* // Toolbar Div */}
 					<div className="w-full h-auto flex-col static" id="toolbar">
-						<div className="w-full h-auto flex flex-col md:flex-row gap-2 p-2">
+						<div className="w-full h-auto flex flex-col md:flex-row gap-2 p-2 border-b-[2px] md:border-none">
 							<Filters
 								setBooks={setBooks}
 								filters={filters}
@@ -144,9 +145,13 @@ const Home = () => {
 								setView={setView}
 							/>
 						</div>
+						{ view === 'list' ? (
 						<div className="hidden md:flex flex-row items-center justify-around p-1 shadow-xl">
 							<Categories />
 						</div>
+						) : (
+							<></>
+						) }
 					</div>
 
 					{view === "list" ? (
@@ -167,7 +172,7 @@ const Home = () => {
 									return (
 										<div
 											key={index}
-											className="grid grid-cols-5 p-2 shadow-lg w-[120vh] md:w-full"
+											className="grid grid-cols-5 p-2 shadow-lg w-[120vh] md:w-full hover:bg-slate-100"
 											onClick={() => {
 												setSelectedBook(book)
 												setModalState(true)
@@ -202,7 +207,6 @@ const Home = () => {
 						<div className="w-full h-[calc(100vh-var(--toolbar-height))] grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 xl:grid-cols-10 gap-3 p-3">
 							{ books.map((book, index) => {
 								return (
-									<>
 										<div className="w-[150px] h-[200px] brightness-50 hover:brightness-100 flex flex-col items-center justify-center rounded p-3" key={index} style={{ background:`url('${book.image}')`, backgroundSize:"cover"}} onClick={() => {
 											setSelectedBook(book)
 											setModalState(true)
@@ -210,7 +214,6 @@ const Home = () => {
 											<p className="font-bold text-white brightness-150 text-center">{book.title}</p>
 											<p className="font-bold text-white brightness-150 text-center">By: {book.author}</p>
 										</div>
-									</>
 								)
 							}) }
 							<div className="w-[150px] h-[200px] brightness-50 hover:brightness-100 flex items-center justify-center rounded p-3 border" ref={loadMoreTrigger}></div>
