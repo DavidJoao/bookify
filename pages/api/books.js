@@ -17,7 +17,7 @@ export default async function getBooks(req, res) {
 			likes: parseFloat(customFaker.number.float(likes).toString().slice(0,3)),
 			reviews: Array.from({ length: reviews }, () => ({
 				name: customFaker.person.fullName(),
-				review: faker.helpers.arrayElements(language === 'es' ? languageData.reviews.es : language === 'fr' ? languageData.reviews.fr : languageData.reviews.en),
+				review: faker.helpers.arrayElement(language === 'es' ? languageData.reviews.es : language === 'fr' ? languageData.reviews.fr : languageData.reviews.en),
 			})),
 			image: customFaker.image.url(200, 300, "books", true),
 		}))
