@@ -6,6 +6,9 @@ import BookDetails from "../components/BookDetails";
 import { getBooksData } from "../lib/actions";
 import { Modal } from "react-bootstrap";
 import seedrandom from "seedrandom";
+import { likesIcon } from "../lib/icons";
+import BookExpansion from "../components/BookExpansion";
+import { navigate } from "../lib/navigate";
 
 const Home = () => {
 	const initialFilters = {
@@ -16,6 +19,7 @@ const Home = () => {
 	}
 
 	const [books, setBooks] = useState([])
+	const [originalBooks, setOriginalBooks] = useState([])
 	const loadMoreTrigger = useRef(null)
 	const [loadingBooks, setLoadingBooks] = useState(false)
 	const [filters, setFilters] = useState(initialFilters)
@@ -65,6 +69,13 @@ const Home = () => {
 		}
 	}, [loadingBooks, loadMoreTrigger, view ])
 
+	useEffect(() => {
+		if (seed) {
+		  setBooks(shuffleBooksBySeed(originalBooks, seed));
+		}
+	  }, [seed, originalBooks]);
+
+
 	const loadMore = async () => {
 		setLoadingBooks(true)
 		const newQuantity = filters?.quantity + 20
@@ -80,7 +91,8 @@ const Home = () => {
 				filters?.likes,
 				filters?.reviews
 			)
-			setBooks(prevBooks => [...prevBooks, ...newData])
+			setOriginalBooks(newData);
+			setBooks(shuffleBooksBySeed(newData, seed)); 
 		} catch (error) {
 			console.log(error)
 		} finally {
@@ -90,43 +102,25 @@ const Home = () => {
 		}
 	}
 
-	function getBookBySeed(seed) {
-		const rng = seedrandom(seed)
-		const randomIndex = Math.floor(rng() * books.length)
-		return books[randomIndex]
-	}
+	function shuffleBooksBySeed(books, seed) {
+		const rng = seedrandom(seed);
+		const shuffledBooks = [...books];
+		for (let i = shuffledBooks.length - 1; i > 0; i--) {
+		  const j = Math.floor(rng() * (i + 1));
+		  [shuffledBooks[i], shuffledBooks[j]] = [shuffledBooks[j], shuffledBooks[i]];
+		}
+		return shuffledBooks;
+	  }
 
-	const handleSeedChange = async seed => {
-		setSeed(seed)
-		setSelectedBook(getBookBySeed(seed))
-		setModalState(true)
-	}
+	  const handleSeedChange = async (newSeed) => {
+		setSeed(newSeed);
+		setTimeout(() => {
+			setBooks(shuffleBooksBySeed(originalBooks, newSeed)); 
+		}, 200);
+	  };
 
 	return (
 		<div className="flex flex-col items-center justify-center">
-		<Modal show={modalState} onHide={() => setModalState(false)}>
-			<Modal.Header className="font-bold text-[20px]" closeButton>{selectedBook?.title} by {selectedBook.author}</Modal.Header>
-			<Modal.Body>
-				<div className="h-[300px] w-[200px] mx-auto rounded" style={{ background:(`url("${selectedBook.image}")`), backgroundSize:'cover' }}></div>
-				<div className="flex flex-col m-2 items-center justify-evenly">
-					<p className="italic">Publisher: {selectedBook.publisher}</p>
-					<p>{selectedBook.likes} Like(s)</p>
-				</div>
-				<div>
-					<p className="text-center mt-3 bg-slate-200 p-1 rounded-t font-bold shadow-lg">Reviews: {selectedBook?.reviews?.length}</p>
-					<div className="border h-[400px] md:h-[250px] overflow-auto rounded-b">
-						{ selectedBook?.reviews?.map((review, index) => {
-							return (
-							<div key={index} className="border p-2 hover:bg-slate-100">
-								<p className="font-bold">{review?.name}</p>
-								<p className="text-slate-400 italic text-sm">- {review?.review}</p>
-							</div>
-							)
-						}) }
-					</div>
-				</div>
-			</Modal.Body>
-		</Modal>
 			{books ? (
 				<>
 					<div className="w-full h-auto flex-col static" id="toolbar">
@@ -140,7 +134,6 @@ const Home = () => {
 								setSeed={setSeed}
 								setSelectedBook={setSelectedBook}
 								setModalState={setModalState}
-								getBookBySeed={getBookBySeed}
 								view={view}
 								setView={setView}
 							/>
@@ -155,39 +148,25 @@ const Home = () => {
 					</div>
 
 					{view === "list" ? (
-						<div className="w-full h-[calc(100vh-var(--toolbar-height))] w-full overflow-x-auto overflow-y-auto flex flex-col px-auto">
+						<div className="w-full h-[calc(100vh-var(--toolbar-height))] w-full overflow-x-auto overflow-y-auto flex flex-col px-auto scroll-smooth">
 							<div className="p-2 grid grid-cols-5 md:hidden p-2 w-[120vh] md:w-full sticky top-0 bg-white">
 								<BookDetails
-									book={{
-										index: "#",
-										ISBN: "ISBN",
-										title: "Title",
-										author: "Author(s)",
-										publisher: "Publisher",
-									}}
-								/>
+									book={{ index: "#", ISBN: "ISBN", title: "Title", author: "Author(s)", publisher: "Publisher"}}/> 
 							</div>
 							{books &&
 								books.map((book, index) => {
 									return (
-										<div
-											key={index}
-											className="grid grid-cols-5 p-2 shadow-lg w-[120vh] md:w-full hover:bg-slate-100"
-											onClick={() => {
-												setSelectedBook(book)
-												setModalState(true)
+										<div id={book?.ISBN} key={index} className={`${book?.ISBN === selectedBook.ISBN ? 'bg-blue-100' : ""} border grid grid-cols-5 w-[120vh] lg:w-full`} onClick={() => {
+												selectedBook === book ? setSelectedBook({}) : setSelectedBook(book);
+												navigate(`#${book?.ISBN}`)
 											}}>
-											<BookDetails
-												index={index}
-												book={book}
-												modalState={modalState}
-												setModalState={setModalState}
-											/>
+											<BookDetails index={index} book={book} modalState={modalState} setModalState={setModalState} selectedBook={selectedBook}/>
+											<BookExpansion book={book} selectedBook={selectedBook} />
 										</div>
 									)
 								})}
 							<div
-								className="p-2 grid grid-cols-5 p-2 w-[120vh] md:w-full"
+								className="p-2 grid grid-cols-5 p-2 w-[120vh]lg:w-full"
 								ref={loadMoreTrigger}>
 								<BookDetails
 									book={{
@@ -209,7 +188,8 @@ const Home = () => {
 								return (
 										<div className="w-[150px] h-[200px] brightness-50 hover:brightness-100 flex flex-col items-center justify-center rounded p-3" key={index} style={{ background:`url('${book.image}')`, backgroundSize:"cover"}} onClick={() => {
 											setSelectedBook(book)
-											setModalState(true)
+											setView("list")
+											navigate(`#${book?.ISBN}`)
 										}}>
 											<p className="font-bold text-white brightness-150 text-center">{book.title}</p>
 											<p className="font-bold text-white brightness-150 text-center">By: {book.author}</p>
