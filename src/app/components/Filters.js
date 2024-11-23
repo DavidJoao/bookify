@@ -23,33 +23,36 @@ const Filters = ({ books, setBooks, filters, setFilters, handleSeedChange, setMo
 	}
 
 	const changeSeed = (e) => {
-		handleSeedChange(seedSearch)
-		setSeedSearch("")
-	}
+		const newSeed = e.target.value;
+		setSeedSearch(newSeed);
+		setTimeout(() => {
+			handleSeedChange(newSeed);
+		}, 600)
+	  }
 
-	const changeRandomSeed = (e) => {
-		const newSeed = Math.floor(Math.random() * 1000000);
-		setSeed(newSeed.toString());
-		setSeedSearch(newSeed.toString())
-		setSelectedBook(getBookBySeed(newSeed.toString()));
-		setModalState(true)
-	}
+	const changeRandomSeed = () => {
+		const newSeed = Math.floor(Math.random() * 1000000).toString();
+		setSeed(newSeed);
+		setSeedSearch(newSeed);
+		handleSeedChange(newSeed);
 
-	useEffect(() => {
+	  };
+
+	  useEffect(() => {
 		const fetchBooks = async () => {
 			await resetLanguage()
 		}
 		fetchBooks()
-	}, [filters.language])
+	  }, [filters.language])
 
 	return (
 		<>
 			<div className="flex flex-col items-center justify-center p-2 w-full">
 				<div className="flex flex-row items-center justify-center w-full my-auto">
-					<label className="text-sm font-semibold text-gray-400 w-full text-center">
+					<label className="text-sm font-semibold text-gray-400 text-center p-2 w-full">
 						Language
 					</label>
-					<select name="language" value={filters?.language} className="input w-full" onChange={changeFilters}>
+					<select name="language" value={filters?.language} className="input text-center text-center p-2 w-full" onChange={changeFilters}>
 						<option value="en">English (USA)</option>
 						<option value="es">Spanish (Mexico)</option>
 						<option value="fr">French (France)</option>
@@ -58,10 +61,9 @@ const Filters = ({ books, setBooks, filters, setFilters, handleSeedChange, setMo
 			</div>
 
 			<div className="flex flex-col items-center justify-center p-2 w-full">
-				<div className="flex flex-row items-center justify-around w-full my-auto">
-					<input required placeholder="Seed" className="border w-1/2 input" value={seedSearch} onChange={(e) => setSeedSearch(e.target.value)}/>
-					<button className={"rounded-full border-[1px] border-blue-500 text-blue-500 p-2 focus:bg-blue-500 focus:text-white button-transition"} onClick={changeSeed}>{arrowRight}</button>
-					<button className={"rounded-full border-[1px] border-blue-500 text-blue-500 p-2 focus:bg-blue-500 focus:text-white button-transition"} onClick={changeRandomSeed}>{random}</button>
+				<div className="flex flex-row items-center justify-around w-full my-auto gap-3">
+					<input required placeholder="Seed" className="border w-1/2 input text-center p-2 w-full" value={seedSearch} onChange={changeSeed}/>
+					<button className={"rounded-full border-[1px] border-blue-500 text-blue-500 p-2 focus:bg-blue-500 focus:text-white button-transition text-center w-full"} onClick={changeRandomSeed}>Random Seed</button>
 				</div>
 			</div>
 
@@ -71,11 +73,12 @@ const Filters = ({ books, setBooks, filters, setFilters, handleSeedChange, setMo
 						Likes: {filters?.likes}
 					</label>
 					<input
+						className=""
 						name="likes"
 						value={filters.likes}
 						type="range"
 						min={0}
-						max={10}
+						max={11}
 						step={0.1}
 						onChange={changeFilters}
 					/>
@@ -83,9 +86,9 @@ const Filters = ({ books, setBooks, filters, setFilters, handleSeedChange, setMo
 			</div>
 
 			<div className="flex flex-col items-center justify-centerp-2 w-full">
-				<div className="flex flex-row items-center w-full my-auto gap-2">
-					<label className="text-sm font-semibold text-gray-400">Reviews:</label>
-					<input name="reviews" value={filters.reviews} type="number" className="input" onChange={changeFilters} step={0.1}/>
+				<div className="flex flex-row items-center justify-center w-full my-auto gap-2">
+					<label className="text-sm font-semibold text-gray-400 text-center p-2 w-full">Reviews:</label>
+					<input name="reviews" value={filters.reviews} type="number" className="input text-center p-2 w-full" onChange={changeFilters} step={0.1}/>
 				</div>
 			</div>
 
