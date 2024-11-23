@@ -137,7 +137,7 @@ const Home = () => {
 							/>
 						</div>
 						{ view === 'list' ? (
-						<div className="hidden md:flex flex-row items-center justify-around p-1 shadow-xl w-full">
+						<div className="hidden md:flex flex-row items-center justify-around p-1 shadow-xl">
 							<Categories />
 						</div>
 						) : (
@@ -146,15 +146,15 @@ const Home = () => {
 					</div>
 
 					{view === "list" ? (
-						<div className="w-full h-[calc(100vh-var(--toolbar-height))] w-[120vh] overflow-x-auto overflow-y-auto flex flex-col scroll-smooth">
-							<div className="grid grid-cols-5 md:hidden p-2 w-full sticky top-0 bg-white mx-auto">
+						<div className="w-full h-[calc(100vh-var(--toolbar-height))] w-[120vh] overflow-x-auto overflow-y-auto flex flex-col px-auto scroll-smooth">
+							<div className="grid grid-cols-5 md:hidden p-2 w-[120vh] md:w-full sticky top-0 bg-white">
 								<BookDetails
 									book={{ index: "#", ISBN: "ISBN", title: "Title", author: "Author(s)", publisher: "Publisher"}}/> 
 							</div>
 							{books &&
 								books.map((book, index) => {
 									return (
-										<div id={book?.ISBN} key={index} className={`${book?.ISBN === selectedBook.ISBN ? 'bg-blue-100' : ""} border grid grid-cols-5 p-2 w-full bg-white`} onClick={() => {
+										<div id={book?.ISBN} key={index} className={`${book?.ISBN === selectedBook.ISBN ? 'bg-blue-100' : ""} border grid grid-cols-5 p-2 w-[120vh] md:w-full bg-white`} onClick={() => {
 												selectedBook === book ? setSelectedBook({}) : setSelectedBook(book);
 												navigate(`#${book?.ISBN}`)
 											}}>
