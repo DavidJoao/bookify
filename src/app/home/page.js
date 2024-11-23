@@ -4,9 +4,7 @@ import Categories from "../components/Categories";
 import Filters from "../components/Filters";
 import BookDetails from "../components/BookDetails";
 import { getBooksData } from "../lib/actions";
-import { Modal } from "react-bootstrap";
 import seedrandom from "seedrandom";
-import { likesIcon } from "../lib/icons";
 import BookExpansion from "../components/BookExpansion";
 import { navigate } from "../lib/navigate";
 
@@ -14,7 +12,7 @@ const Home = () => {
 	const initialFilters = {
 		likes: 5,
 		reviews: 5,
-		quantity: 40,
+		quantity: 20,
 		language: "en",
 	}
 
@@ -123,7 +121,7 @@ const Home = () => {
 		<div className="flex flex-col items-center justify-center">
 			{books ? (
 				<>
-					<div className="w-full h-auto flex-col static" id="toolbar">
+					<div className="w-full h-auto flex-col static bg-slate-100 shadow-lg" id="toolbar">
 						<div className="w-full h-auto flex flex-col md:flex-row gap-2 p-2 border-b-[2px] md:border-none">
 							<Filters
 								setBooks={setBooks}
@@ -149,14 +147,14 @@ const Home = () => {
 
 					{view === "list" ? (
 						<div className="w-full h-[calc(100vh-var(--toolbar-height))] w-[120vh] overflow-x-auto overflow-y-auto flex flex-col px-auto scroll-smooth">
-							<div className="p-2 grid grid-cols-5 md:hidden p-2 w-[120vh] md:w-full sticky top-0 bg-white">
+							<div className="grid grid-cols-5 md:hidden p-2 w-[120vh] md:w-full sticky top-0 bg-white">
 								<BookDetails
 									book={{ index: "#", ISBN: "ISBN", title: "Title", author: "Author(s)", publisher: "Publisher"}}/> 
 							</div>
 							{books &&
 								books.map((book, index) => {
 									return (
-										<div id={book?.ISBN} key={index} className={`${book?.ISBN === selectedBook.ISBN ? 'bg-blue-100' : ""} border grid grid-cols-5 w-[120vh] lg:w-full`} onClick={() => {
+										<div id={book?.ISBN} key={index} className={`${book?.ISBN === selectedBook.ISBN ? 'bg-blue-100' : ""} border grid grid-cols-5 p-2 w-[120vh] md:w-full bg-white`} onClick={() => {
 												selectedBook === book ? setSelectedBook({}) : setSelectedBook(book);
 												navigate(`#${book?.ISBN}`)
 											}}>

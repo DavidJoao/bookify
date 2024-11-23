@@ -63,7 +63,7 @@ const Filters = ({ books, setBooks, filters, setFilters, handleSeedChange, setMo
 			<div className="flex flex-col items-center justify-center p-2 w-full">
 				<div className="flex flex-row items-center justify-around w-full my-auto gap-3">
 					<input required placeholder="Seed" className="border w-1/2 input text-center p-2 w-full" value={seedSearch} onChange={changeSeed}/>
-					<button className={"rounded-full border-[1px] border-blue-500 text-blue-500 p-2 focus:bg-blue-500 focus:text-white button-transition text-center w-full"} onClick={changeRandomSeed}>Random Seed</button>
+					<button className={"rounded-full border-[1px] border-blue-500 text-blue-500 p-2 button-transition text-center w-full"} onClick={changeRandomSeed}>Random Seed</button>
 				</div>
 			</div>
 
