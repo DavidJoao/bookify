@@ -118,89 +118,57 @@ const Home = () => {
 	  };
 
 	return (
-		<div className="flex flex-col items-center justify-center">
-			{books ? (
+		<div className="border-[1px] border-black w-screen h-screen flex flex-col items-center justify-start">
+			<div className="w-full h-auto flex-col static bg-slate-100 shadow-lg" id="toolbar">
+				<div className="w-full h-auto flex flex-col md:flex-row gap-2 p-2 border-b-[2px] md:border-none">
+					<Filters setBooks={setBooks} filters={filters} setFilters={setFilters} handleSeedChange={handleSeedChange} books={books} setSeed={setSeed} setSelectedBook={setSelectedBook} setModalState={setModalState} view={view} setView={setView} />
+				</div>
+				<div className="hidden md:flex flex-row items-center justify-around p-1 shadow-xl">
+					<Categories />
+				</div>
+			</div>
+			{ books ? (
 				<>
-					<div className="w-full h-auto flex-col static bg-slate-100 shadow-lg" id="toolbar">
-						<div className="w-full h-auto flex flex-col md:flex-row gap-2 p-2 border-b-[2px] md:border-none">
-							<Filters
-								setBooks={setBooks}
-								filters={filters}
-								setFilters={setFilters}
-								handleSeedChange={handleSeedChange}
-								books={books}
-								setSeed={setSeed}
-								setSelectedBook={setSelectedBook}
-								setModalState={setModalState}
-								view={view}
-								setView={setView}
-							/>
-						</div>
-						{ view === 'list' ? (
-						<div className="hidden md:flex flex-row items-center justify-around p-1 shadow-xl">
-							<Categories />
-						</div>
-						) : (
-							<></>
-						) }
+				{ view === "list" ? (
+					<>
+					{books && books.map((book, index) => {
+						return (
+							<div id={book?.ISBN} key={index} className={`${book?.ISBN === selectedBook.ISBN ? 'bg-blue-100' : ""} border flex flex-col lg:flex-row justify-between lg:grid lg:grid-cols-5 p-2 w-screen content-center md:w-full bg-white`} onClick={() => {
+								selectedBook === book ? setSelectedBook({}) : setSelectedBook(book);
+								navigate(`#${book?.ISBN}`)}}>
+									<BookDetails index={index} book={book} modalState={modalState} setModalState={setModalState} selectedBook={selectedBook}/>
+									<BookExpansion book={book} selectedBook={selectedBook} />
+							</div>
+						)
+					})}
+					<div className="p-2 grid grid-cols-5 p-2 w-[120vh]lg:w-full" ref={loadMoreTrigger}> 
+						<BookDetails book={{ index: "Loading", ISBN: "Loading", title: "Loading", author: "Loading", publisher: "Loading"}}/>
+						{loadingBooks && ( <p className="text-center h-[20px]">Loading more data...</p> )}
 					</div>
-
-					{view === "list" ? (
-						<div className="w-full h-[calc(100vh-var(--toolbar-height))] w-full overflow-x-auto overflow-y-auto flex flex-col px-auto scroll-smooth">
-							<div className="p-2 grid grid-cols-5 md:hidden p-2 w-[120vh] md:w-full sticky top-0 bg-white">
-								<BookDetails
-									book={{ index: "#", ISBN: "ISBN", title: "Title", author: "Author(s)", publisher: "Publisher"}}/> 
-							</div>
-							{books &&
-								books.map((book, index) => {
-									return (
-										<div id={book?.ISBN} key={index} className={`${book?.ISBN === selectedBook.ISBN ? 'bg-blue-100' : ""} border grid grid-cols-5 p-2 w-[120vh] md:w-full bg-white`} onClick={() => {
-												selectedBook === book ? setSelectedBook({}) : setSelectedBook(book);
-												navigate(`#${book?.ISBN}`)
-											}}>
-											<BookDetails index={index} book={book} modalState={modalState} setModalState={setModalState} selectedBook={selectedBook}/>
-											<BookExpansion book={book} selectedBook={selectedBook} />
-										</div>
-									)
-								})}
-							<div
-								className="p-2 grid grid-cols-5 p-2 w-[120vh]lg:w-full"
-								ref={loadMoreTrigger}>
-								<BookDetails
-									book={{
-										index: "Loading",
-										ISBN: "Loading",
-										title: "Loading",
-										author: "Loading",
-										publisher: "Loading",
-									}}
-								/>
-							</div>
-							{loadingBooks && (
-								<p className="text-center h-[20px]">Loading more data...</p>
-							)}
-						</div>
-					) : (
-						<div className="w-full h-[calc(100vh-var(--toolbar-height))] grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 xl:grid-cols-10 gap-3 p-3">
-							{ books.map((book, index) => {
-								return (
-										<div className="w-[150px] h-[200px] brightness-50 hover:brightness-100 flex flex-col items-center justify-center rounded p-3" key={index} style={{ background:`url('${book.image}')`, backgroundSize:"cover"}} onClick={() => {
-											setSelectedBook(book)
-											setView("list")
-											navigate(`#${book?.ISBN}`)
-										}}>
-											<p className="font-bold text-white brightness-150 text-center">{book.title}</p>
-											<p className="font-bold text-white brightness-150 text-center">By: {book.author}</p>
-										</div>
-								)
-							}) }
-							<div className="w-[150px] h-[200px] brightness-50 hover:brightness-100 flex items-center justify-center rounded p-3 border" ref={loadMoreTrigger}></div>
-						</div>
-					)}
+					</>
+				) : (
+					<>
+					<div className="w-full h-[calc(100vh-var(--toolbar-height))] grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 xl:grid-cols-10 gap-3 p-3">
+						{ books.map((book, index) => {
+							return (
+								<div className="w-[150px] h-[200px] brightness-50 hover:brightness-100 flex flex-col items-center justify-center rounded p-3" key={index} style={{ background:`url('${book.image}')`, backgroundSize:"cover"}} onClick={() => {
+									setSelectedBook(book)
+									setView("list")
+									navigate(`#${book?.ISBN}`)
+							}}>
+							<p className="font-bold text-white brightness-150 text-center">{book.title}</p>
+							<p className="font-bold text-white brightness-150 text-center">By: {book.author}</p>
+								</div>
+							)
+						}) }
+						<div className="w-[150px] h-[200px] brightness-50 hover:brightness-100 flex items-center justify-center rounded p-3 border" ref={loadMoreTrigger}></div>
+					</div>
+					</>
+				)}
 				</>
 			) : (
-				<p>Loading Books...</p>
-			)}
+				<><p>Loading Books...</p></>
+			) }
 		</div>
 	)
 }
