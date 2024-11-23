@@ -5,7 +5,7 @@ const BookExpansion = ({ book, selectedBook }) => {
 	return (
 		<>
 			<div
-				className={`${ book?.ISBN === selectedBook.ISBN ? "flex" : "hidden"} border h-auto lg:h-[500px] bg-blue-50 col-span-5 rounded flex-col lg:flex-row items-start lg:items-center justify-start lg:justify-center lg:p-2`}>
+				className={`${ book?.ISBN === selectedBook.ISBN ? "flex" : "hidden"} border h-auto lg:h-[500px] bg-blue-50 col-span-5 rounded flex-col lg:flex-row items-start lg:items-center justify-start lg:justify-center pb-5 lg:p-2`}>
 				<div className="w-screen md:w-1/4 h-auto lg:h-full flex flex-col items-center p-2 gap-2">
 					<div className="h-[300px] w-[200px] rounded" style={{ background: `url("${book?.image}")`, backgroundSize: "cover",}}></div>
 					<p className="flex justify-center gap-2 bg-blue-500 rounded-full w-[50px] p-2 text-white font-semibold"> {book?.likes} {likesIcon}</p>
