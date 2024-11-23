@@ -146,8 +146,8 @@ const Home = () => {
 					</div>
 
 					{view === "list" ? (
-						<div className="w-full h-[calc(100vh-var(--toolbar-height))] w-[120vh] overflow-x-auto overflow-y-auto flex flex-col px-auto scroll-smooth">
-							<div className="grid grid-cols-5 md:hidden p-2 w-[120vh] md:w-full sticky top-0 bg-white">
+						<div className="w-full h-[calc(100vh-var(--toolbar-height))] w-full overflow-x-auto overflow-y-auto flex flex-col px-auto">
+							<div className="p-2 grid grid-cols-5 md:hidden p-2 w-[120vh] md:w-full sticky top-0 bg-white">
 								<BookDetails
 									book={{ index: "#", ISBN: "ISBN", title: "Title", author: "Author(s)", publisher: "Publisher"}}/> 
 							</div>
